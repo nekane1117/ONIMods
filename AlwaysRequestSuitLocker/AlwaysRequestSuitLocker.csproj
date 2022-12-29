@@ -54,6 +54,9 @@
       <HintPath>dlls\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)mod_info.yaml $(ProjectDir)$(OutDir)mod_info.yaml</PostBuildEvent>
