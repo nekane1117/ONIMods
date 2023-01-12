@@ -1,15 +1,11 @@
-﻿using HarmonyLib;
+﻿using AlwaysRequestSuitLocker;
+using HarmonyLib;
 using KMod;
-using PeterHan.PLib.Actions;
-using PeterHan.PLib.AVC;
 using PeterHan.PLib.Core;
-using PeterHan.PLib.Database;
 using PeterHan.PLib.Options;
 using PeterHan.PLib.PatchManager;
-using PeterHan.PLib.UI;
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace AlwaysRequestSuitLocker
 {
@@ -22,7 +18,7 @@ namespace AlwaysRequestSuitLocker
         }
     }
 
-    [HarmonyPatch(typeof(SuitLocker), nameof(SuitLocker.EquipTo), new Type[] { typeof(Equipment) })]
+    [HarmonyPatch(typeof(SuitLocker), nameof(SuitLocker.EquipTo), new Type[] { typeof (Equipment) })]
     internal class EqiopToPatch
     {
         private static void Postfix(Equipment equipment, StateMachineComponent __instance)
@@ -30,7 +26,6 @@ namespace AlwaysRequestSuitLocker
             AlwaysRequestSuitLockerUtil.requestSuit(__instance);
         }
     }
-
 
     public sealed class AlwaysRequestSuitLockerOptions : UserMod2
     {
@@ -57,10 +52,16 @@ class AlwaysRequestSuitLockerUtil
 {
     public static StateMachineComponent requestSuit(StateMachineComponent smc)
     {
-
-        if (smc is SuitLocker sl && sl.OutfitTags.First() != GameTags.JetSuit)
+        if (smc is SuitLocker sl)
         {
-            sl.smi.sm.isWaitingForSuit.Set(true, sl.smi);
+            if (
+              (sl.OutfitTags.First() == GameTags.OxygenMask && Globals.opt.OxygenMask) ||
+              (sl.OutfitTags.First() == GameTags.AtmoSuit && Globals.opt.AtmoSuit) ||
+              (sl.OutfitTags.First() == GameTags.JetSuit && Globals.opt.JetSuit))
+            {
+                sl.smi.sm.isWaitingForSuit.Set(true, sl.smi);
+
+            }
         }
         return smc;
     }
